@@ -19,10 +19,11 @@ for i in range(loader.test_set[0].shape[0]):
     test_set[0][i] = cv2.resize(loader.test_set[0][i], (8,8)).flatten()/255.0
 
 
-nn = NeuralNetwork([64, 32, 16, 10], learn_rate=0.5)
-train_len = 2000
+nn = NeuralNetwork([64, 32, 16, 10])
+nn.dump("./mnis_json_nn.json")
+train_len = 60000
 print(test_set[1][:20])
-nn.fit(train_set[0][:train_len], train_set[1][:train_len], epochs=5000)
+nn.fit(train_set[0][:train_len], train_set[1][:train_len], epochs=10000)
 test_len = 100
 p = nn.predict(test_set[0][:test_len])
 print(classification_report(test_set[1][:test_len].argmax(axis = 1), p.argmax(axis = 1)))

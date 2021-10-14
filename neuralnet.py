@@ -1,5 +1,5 @@
 import numpy as np
-from numba import jit
+import json
 class NeuralNetwork:
     def __init__(self, layers, learn_rate = 0.1):
         self.W = []
@@ -14,11 +14,9 @@ class NeuralNetwork:
         W /= np.sqrt(layers[-2])
         self.W.append(W)
 
-    @jit
     def sigmoid(self, x):
         return 1/(1 + np.exp(-x))
 
-    @jit
     def sigmoid_prime(self, x):
         return np.exp(-x)/(1 + np.exp(-x))**2
 
@@ -32,7 +30,6 @@ class NeuralNetwork:
             if epoch % display_update == 0:
                 print(f"Loss = {self.calculate_loss(X, y)}")
 
-    @jit
     def partial_fit(self, x, target):
 
         A = [x]
@@ -77,3 +74,8 @@ class NeuralNetwork:
         targets = np.atleast_2d(targets)
         predictions = self.predict(X, add_bias=False)
         return 0.5*np.sum((targets - predictions)**2)
+
+    def dump(self, filename):
+        with open(filename, "w") as f:
+            print(json.dumps([w.tolist() for w in self.W]))
+            f.write(json.dumps([w.tolist() for w in self.W]))
